@@ -13,6 +13,10 @@
 		3E61A6841B09BC7D00D2474E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E61A6831B09BC7D00D2474E /* Images.xcassets */; };
 		3E61A6871B09BC7D00D2474E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E61A6851B09BC7D00D2474E /* LaunchScreen.xib */; };
 		3E61A6931B09BC7D00D2474E /* ConvolutionExplorerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61A6921B09BC7D00D2474E /* ConvolutionExplorerTests.swift */; };
+		3E61A69F1B09BD1100D2474E /* SLControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61A69D1B09BD1100D2474E /* SLControls.swift */; };
+		3E61A6A01B09BD1100D2474E /* SLGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61A69E1B09BD1100D2474E /* SLGroup.swift */; };
+		3E61A6A31B09BD4C00D2474E /* image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3E61A6A21B09BD4C00D2474E /* image.jpg */; };
+		3E61A6A61B09BE1A00D2474E /* KernelEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61A6A51B09BE1A00D2474E /* KernelEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,10 @@
 		3E61A68C1B09BC7D00D2474E /* ConvolutionExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConvolutionExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E61A6911B09BC7D00D2474E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E61A6921B09BC7D00D2474E /* ConvolutionExplorerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvolutionExplorerTests.swift; sourceTree = "<group>"; };
+		3E61A69D1B09BD1100D2474E /* SLControls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLControls.swift; sourceTree = "<group>"; };
+		3E61A69E1B09BD1100D2474E /* SLGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLGroup.swift; sourceTree = "<group>"; };
+		3E61A6A21B09BD4C00D2474E /* image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpg; sourceTree = "<group>"; };
+		3E61A6A51B09BE1A00D2474E /* KernelEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KernelEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +85,9 @@
 		3E61A6791B09BC7D00D2474E /* ConvolutionExplorer */ = {
 			isa = PBXGroup;
 			children = (
+				3E61A6A41B09BDF200D2474E /* kernelEditor */,
+				3E61A6A11B09BD2A00D2474E /* assets */,
+				3E61A69C1B09BCEE00D2474E /* shinpuru */,
 				3E61A67C1B09BC7D00D2474E /* AppDelegate.swift */,
 				3E61A67E1B09BC7D00D2474E /* ViewController.swift */,
 				3E61A6801B09BC7D00D2474E /* Main.storyboard */,
@@ -110,6 +121,31 @@
 				3E61A6911B09BC7D00D2474E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3E61A69C1B09BCEE00D2474E /* shinpuru */ = {
+			isa = PBXGroup;
+			children = (
+				3E61A69D1B09BD1100D2474E /* SLControls.swift */,
+				3E61A69E1B09BD1100D2474E /* SLGroup.swift */,
+			);
+			name = shinpuru;
+			sourceTree = "<group>";
+		};
+		3E61A6A11B09BD2A00D2474E /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				3E61A6A21B09BD4C00D2474E /* image.jpg */,
+			);
+			name = assets;
+			sourceTree = "<group>";
+		};
+		3E61A6A41B09BDF200D2474E /* kernelEditor */ = {
+			isa = PBXGroup;
+			children = (
+				3E61A6A51B09BE1A00D2474E /* KernelEditor.swift */,
+			);
+			name = kernelEditor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,6 +228,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E61A6A31B09BD4C00D2474E /* image.jpg in Resources */,
 				3E61A6821B09BC7D00D2474E /* Main.storyboard in Resources */,
 				3E61A6871B09BC7D00D2474E /* LaunchScreen.xib in Resources */,
 				3E61A6841B09BC7D00D2474E /* Images.xcassets in Resources */,
@@ -212,8 +249,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E61A6A01B09BD1100D2474E /* SLGroup.swift in Sources */,
 				3E61A67F1B09BC7D00D2474E /* ViewController.swift in Sources */,
 				3E61A67D1B09BC7D00D2474E /* AppDelegate.swift in Sources */,
+				3E61A69F1B09BD1100D2474E /* SLControls.swift in Sources */,
+				3E61A6A61B09BE1A00D2474E /* KernelEditor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
