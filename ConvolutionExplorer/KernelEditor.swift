@@ -8,7 +8,7 @@
 
 import UIKit
 
-class KernelEditor: UIView
+class KernelEditor: UIControl
 {
     let mainGroup = SLVGroup()
     let topSpacer = SLSpacer(percentageSize: nil, explicitSize: nil)
@@ -16,8 +16,10 @@ class KernelEditor: UIView
     
     var cells = [KernelEditorCell]()
     
-    required init()
+    required init(kernel: [Int])
     {
+        self.kernel = kernel
+        
         super.init(frame: CGRectZero)
 
         mainGroup.children.append(topSpacer)
@@ -32,11 +34,31 @@ class KernelEditor: UIView
         mainGroup.children.append(topSpacer)
         
         addSubview(mainGroup)
+        
+        updateCellsFromKernel()
     }
 
     required init(coder aDecoder: NSCoder)
     {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    
+    var kernel: [Int]
+    {
+        didSet
+        {
+            updateCellsFromKernel()
+        }
+    }
+    
+    func updateCellsFromKernel()
+    {
+        for (index: Int, value: (Int, KernelEditorCell)) in enumerate(zip(kernel, cells))
+        {
+            // println("row = \(Int(index / 7)) | column = \(index % 7)")
+            value.1.text = "\(value.0)"
+        }
     }
     
     var kernelSize: KernelSize = KernelSize.ThreeByThree
@@ -91,6 +113,18 @@ class KernelEditor: UIView
                 touchedCells.append(obj)
             }
         }
+    }
+    
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent)
+    {
+        super.touchesEnded(touches, withEvent: event)
+        
+        sendActionsForControlEvents(UIControlEvents.ValueChanged)
+    }
+    
+    var selectedCellIndexes: [Int]
+    {
+        return cells.filter({ $0.selected }).map({ $0.index })
     }
     
     override func layoutSubviews()
@@ -155,6 +189,11 @@ class KernelEditorCell: SLLabel
         text = "\(rowNumber):\(columnNumber)"
         
         kernelEditor.cells.append(self)
+    }
+    
+    var index: Int
+    {
+        return (rowNumber * 7) + columnNumber
     }
     
     var selected: Bool = false
