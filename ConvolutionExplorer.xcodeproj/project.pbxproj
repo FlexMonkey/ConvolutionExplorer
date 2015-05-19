@@ -451,6 +451,7 @@
 				3E61A6981B09BC7D00D2474E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3E61A6991B09BC7D00D2474E /* Build configuration list for PBXNativeTarget "ConvolutionExplorerTests" */ = {
 			isa = XCConfigurationList;
@@ -459,6 +460,7 @@
 				3E61A69B1B09BC7D00D2474E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

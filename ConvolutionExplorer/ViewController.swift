@@ -20,18 +20,16 @@ class ViewController: UIViewController {
     
     let kernelSizeSegmentedControl = UISegmentedControl(items: [KernelSize.ThreeByThree.rawValue, KernelSize.FiveByFive.rawValue, KernelSize.SevenBySeven.rawValue])
     
+    let image = UIImage(named: "image.jpg")
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-    
-        let image = UIImage(named: "image.jpg")
 
-        imageView.image = applyConvolutionFilterToImage(image!, kernel: [-6,-2,-10 ,12,6,-8 ,12,-2,1], width: 3, height: 3, divisor: 16)
-        
         imageView.contentMode = UIViewContentMode.ScaleAspectFit
         
-        valueSlider.minimumValue = -10
-        valueSlider.maximumValue = 10
+        valueSlider.minimumValue = -20
+        valueSlider.maximumValue = 20
         valueSlider.enabled = false
         valueSlider.addTarget(self, action: "sliderChange", forControlEvents: UIControlEvents.ValueChanged)
         
@@ -50,7 +48,7 @@ class ViewController: UIViewController {
         kernelSizeSegmentedControl.selectedSegmentIndex = 0
         kernelSizeChange()
         
-        // ---- vImageConvolve_Planar8
+        applyKernel()
     }
     
     func applyConvolutionFilterToImage(image: UIImage, kernel: [Int16], width: Int, height: Int, divisor: Int) -> UIImage
@@ -77,14 +75,46 @@ class ViewController: UIViewController {
         return out!
     }
 
+    func applyKernel()
+    {
+        var kernel = [Int16]()
+        let size: Int = kernelEditor.kernelSize == .ThreeByThree ? 3 : kernelEditor.kernelSize == .FiveByFive ? 5 : 7
+        
+        for (idx, cell) in enumerate(kernelEditor.kernel)
+        {
+            let row = Int(idx / 7)
+            let column = idx % 7
+
+            switch kernelEditor.kernelSize
+            {
+            case .ThreeByThree:
+                if row >= 2 && row <= 4 && column >= 2 && column <= 4
+                {
+                    kernel.append(Int16(cell))
+                }
+            case .FiveByFive:
+                if row >= 1 && row <= 5 && column >= 1 && column <= 5
+                {
+                    kernel.append(Int16(cell))
+                }
+            case .SevenBySeven:
+                kernel.append(Int16(cell))
+            }
+        }
+        
+        println(kernel.debugDescription)
+        
+        imageView.image = applyConvolutionFilterToImage(image!, kernel: kernel, width: size, height: size, divisor: 4)
+    }
+    
     func sliderChange()
     {
-        let kernel = kernelEditor.kernel
-        
         for index in kernelEditor.selectedCellIndexes
         {
             kernelEditor.kernel[index] = Int(valueSlider.value)
         }
+        
+        applyKernel()
     }
     
     func selectionChanged()
@@ -104,6 +134,7 @@ class ViewController: UIViewController {
         if let kernelSize = KernelSize(rawValue: kernelSizeSegmentedControl.titleForSegmentAtIndex(kernelSizeSegmentedControl.selectedSegmentIndex)!)
         {
             kernelEditor.kernelSize = kernelSize
+            applyKernel()
         }
     }
 
@@ -113,6 +144,11 @@ class ViewController: UIViewController {
         let bottom = bottomLayoutGuide.length
         
         mainGroup.frame = CGRect(x: 0, y: top, width: view.frame.width, height: view.frame.height - top - bottom).rectByInsetting(dx: 5, dy: 0)
+    }
+    
+    override func supportedInterfaceOrientations() -> Int
+    {
+        return Int(UIInterfaceOrientationMask.Landscape.rawValue)
     }
 
 }
