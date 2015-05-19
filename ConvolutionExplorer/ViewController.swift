@@ -30,6 +30,7 @@ class ViewController: UIViewController {
         
         valueSlider.minimumValue = -10
         valueSlider.maximumValue = 10
+        valueSlider.enabled = false
         valueSlider.addTarget(self, action: "sliderChange", forControlEvents: UIControlEvents.ValueChanged)
         
         kernelSizeSegmentedControl.addTarget(self, action: "kernelSizeChange", forControlEvents: UIControlEvents.ValueChanged)
@@ -62,18 +63,14 @@ class ViewController: UIViewController {
     
     func selectionChanged()
     {
-        var accum = 0
+        valueSlider.enabled = kernelEditor.selectedCellIndexes.count != 0
         
-        if kernelEditor.selectedCellIndexes.count > 0
+        if valueSlider.enabled
         {
-            for index in kernelEditor.selectedCellIndexes
-            {
-                accum += kernelEditor.kernel[index]
-            }
+            let selectionAverage = kernelEditor.selectedCellIndexes.reduce(0, combine: { $0 + kernelEditor.kernel[$1] }) / kernelEditor.selectedCellIndexes.count
             
-            accum /= kernelEditor.selectedCellIndexes.count
+            valueSlider.value = Float(selectionAverage);
         }
-        valueSlider.value = Float(accum)
     }
     
     func kernelSizeChange()

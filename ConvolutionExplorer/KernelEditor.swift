@@ -135,6 +135,8 @@ class KernelEditor: UIControl
     }
 }
 
+// MARK: KernelEditorRow
+
 class KernelEditorRow: SLHGroup
 {
     var kernelEditor: KernelEditor
@@ -164,6 +166,8 @@ class KernelEditorRow: SLHGroup
         fatalError("init() has not been implemented")
     }
 }
+
+// MARK: KernelEditorCell
 
 class KernelEditorCell: SLLabel
 {
