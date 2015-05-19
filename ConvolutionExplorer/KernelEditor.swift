@@ -190,7 +190,6 @@ class KernelEditorCell: SLLabel
         layer.backgroundColor = UIColor.lightGrayColor().CGColor
         layer.borderWidth = 1
         layer.cornerRadius = 3
-        text = "\(rowNumber):\(columnNumber)"
         
         kernelEditor.cells.append(self)
     }
@@ -204,8 +203,7 @@ class KernelEditorCell: SLLabel
     {
         didSet
         {
-            layer.backgroundColor = selected ? UIColor.blueColor().CGColor : UIColor.lightGrayColor().CGColor
-            textColor = selected ? UIColor.whiteColor() : UIColor.blackColor()
+            setColors()
         }
     }
     
@@ -213,8 +211,15 @@ class KernelEditorCell: SLLabel
     {
         didSet
         {
-            alpha = enabled ? 1 : 0.5
+            setColors()
         }
+    }
+    
+    func setColors()
+    {
+        layer.backgroundColor = selected && enabled ? UIColor.blueColor().CGColor : UIColor.lightGrayColor().CGColor
+        textColor = selected && enabled ? UIColor.whiteColor() : UIColor.blackColor()
+        alpha = enabled ? 1 : 0.5
     }
     
     required init(coder aDecoder: NSCoder)

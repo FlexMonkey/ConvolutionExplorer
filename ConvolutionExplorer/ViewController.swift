@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     let workspace = SLHGroup()
     let toolbar = SLHGroup()
     let imageView = UIImageView()
-    let kernelEditor = KernelEditor(kernel: [Int](count: 49, repeatedValue: 1))
+    let kernelEditor = KernelEditor(kernel: [Int](count: 49, repeatedValue: 0))
     let valueSlider = UISlider()
     
     let kernelSizeSegmentedControl = UISegmentedControl(items: [KernelSize.ThreeByThree.rawValue, KernelSize.FiveByFive.rawValue, KernelSize.SevenBySeven.rawValue])
@@ -34,6 +34,12 @@ class ViewController: UIViewController {
         valueSlider.addTarget(self, action: "sliderChange", forControlEvents: UIControlEvents.ValueChanged)
         
         kernelSizeSegmentedControl.addTarget(self, action: "kernelSizeChange", forControlEvents: UIControlEvents.ValueChanged)
+        
+        kernelEditor.kernel[17] = -1
+        kernelEditor.kernel[23] = -1
+        kernelEditor.kernel[24] = 6
+        kernelEditor.kernel[25] = -1
+        kernelEditor.kernel[31] = -1
         
         kernelEditor.addTarget(self, action: "selectionChanged", forControlEvents: UIControlEvents.ValueChanged)
         
