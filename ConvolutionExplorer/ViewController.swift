@@ -25,7 +25,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     
         let image = UIImage(named: "image.jpg")
-        imageView.image = gaussBlur()(image!)
+
+        imageView.image = applyConvolutionFilterToImage(image!, kernel: [-6,-2,-10 ,12,6,-8 ,12,-2,1], width: 3, height: 3, divisor: 16)
+        
         imageView.contentMode = UIViewContentMode.ScaleAspectFit
         
         valueSlider.minimumValue = -10
@@ -51,53 +53,30 @@ class ViewController: UIViewController {
         // ---- vImageConvolve_Planar8
     }
     
-    typealias Filter = UIImage -> UIImage
-    
-    func gaussBlur() -> Filter {
-        return filterWithConvolutionMatrix_xx([10,2,1 ,2,4,2 ,1,2,1], width: 3, height: 3, divisor: 16)
-    }
-    
-    private func filterWithConvolutionMatrix_xx(kernel:[Int16], width:Int, height:Int, divisor:Int) -> Filter{
-        return { image in
-            let imageRef = image.CGImage
-            
-            let inProvider = CGImageGetDataProvider(imageRef)
-            let inBitMapData = CGDataProviderCopyData(inProvider)
-            
-            var inBuffer: vImage_Buffer = vImage_Buffer(data: UnsafeMutablePointer(CFDataGetBytePtr(inBitMapData)), height: UInt(CGImageGetHeight(imageRef)), width: UInt(CGImageGetWidth(imageRef)), rowBytes: CGImageGetBytesPerRow(imageRef))
-            
-            var pixelBuffer = malloc(CGImageGetBytesPerRow(imageRef) * CGImageGetHeight(imageRef))
-            
-            var outBuffer = vImage_Buffer(data: pixelBuffer, height: UInt(CGImageGetHeight(imageRef)), width: UInt(CGImageGetWidth(imageRef)), rowBytes: CGImageGetBytesPerRow(imageRef))
-            
-            var bColor : Array<UInt8> = [0,0,0,0]
-    
-            var error = vImageConvolve_ARGB8888(&inBuffer, &outBuffer, nil, 0, 0, kernel, UInt32(height), UInt32(width), Int32(divisor), &bColor, UInt32(kvImageBackgroundColorFill))
-            
-            let out = UIImage(fromvImageOutBuffer: outBuffer, scale: image.scale, orientation: .Up)
-            
-            free(pixelBuffer)
-            
-            return out!
-        }
-    }
-    
-    func filterWithConvolutionMatrix(#kernel: Array<Array<Int16>>, divisor:Int) -> Filter {
+    func applyConvolutionFilterToImage(image: UIImage, kernel: [Int16], width: Int, height: Int, divisor: Int) -> UIImage
+    {
+        let imageRef = image.CGImage
         
-        var input : [Int16] = kernel.reduce([Int16]()) { (var nArray:[Int16], row:[Int16]) -> Array<Int16> in
-            var mutableNArray = nArray
-            for i16 in row {
-                mutableNArray.append(i16)
-            }
-            return mutableNArray
-        }
+        let inProvider = CGImageGetDataProvider(imageRef)
+        let inBitMapData = CGDataProviderCopyData(inProvider)
         
-        return filterWithConvolutionMatrix_xx(input, width: Int( kernel[0].count ), height: Int( kernel.count ), divisor: divisor)
+        var inBuffer: vImage_Buffer = vImage_Buffer(data: UnsafeMutablePointer(CFDataGetBytePtr(inBitMapData)), height: UInt(CGImageGetHeight(imageRef)), width: UInt(CGImageGetWidth(imageRef)), rowBytes: CGImageGetBytesPerRow(imageRef))
+        
+        var pixelBuffer = malloc(CGImageGetBytesPerRow(imageRef) * CGImageGetHeight(imageRef))
+        
+        var outBuffer = vImage_Buffer(data: pixelBuffer, height: UInt(CGImageGetHeight(imageRef)), width: UInt(CGImageGetWidth(imageRef)), rowBytes: CGImageGetBytesPerRow(imageRef))
+        
+        var bColor : Array<UInt8> = [0,0,0,0]
+        
+        var error = vImageConvolve_ARGB8888(&inBuffer, &outBuffer, nil, 0, 0, kernel, UInt32(height), UInt32(width), Int32(divisor), &bColor, UInt32(kvImageBackgroundColorFill))
+        
+        let out = UIImage(fromvImageOutBuffer: outBuffer, scale: image.scale, orientation: .Up)
+        
+        free(pixelBuffer)
+        
+        return out!
     }
-    
- 
-    
-    
+
     func sliderChange()
     {
         let kernel = kernelEditor.kernel
@@ -139,8 +118,10 @@ class ViewController: UIViewController {
 }
 
 
-private extension UIImage {
-    convenience init?(fromvImageOutBuffer outBuffer:vImage_Buffer, scale:CGFloat, orientation: UIImageOrientation){
+private extension UIImage
+{
+    convenience init?(fromvImageOutBuffer outBuffer:vImage_Buffer, scale:CGFloat, orientation: UIImageOrientation)
+    {
         var colorSpace = CGColorSpaceCreateDeviceRGB()
         
         var context = CGBitmapContextCreate(outBuffer.data, Int(outBuffer.width), Int(outBuffer.height), 8, outBuffer.rowBytes, colorSpace, CGBitmapInfo(CGImageAlphaInfo.NoneSkipLast.rawValue))
