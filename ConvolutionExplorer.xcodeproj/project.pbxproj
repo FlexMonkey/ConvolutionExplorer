@@ -17,6 +17,7 @@
 		3E61A6A01B09BD1100D2474E /* SLGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61A69E1B09BD1100D2474E /* SLGroup.swift */; };
 		3E61A6A31B09BD4C00D2474E /* image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3E61A6A21B09BD4C00D2474E /* image.jpg */; };
 		3E61A6A61B09BE1A00D2474E /* KernelEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E61A6A51B09BE1A00D2474E /* KernelEditor.swift */; };
+		3EB16CFF1B0C4B8B0014A78D /* accelerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB16CFE1B0C4B8B0014A78D /* accelerate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		3E61A69E1B09BD1100D2474E /* SLGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLGroup.swift; sourceTree = "<group>"; };
 		3E61A6A21B09BD4C00D2474E /* image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpg; sourceTree = "<group>"; };
 		3E61A6A51B09BE1A00D2474E /* KernelEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KernelEditor.swift; sourceTree = "<group>"; };
+		3EB16CFE1B0C4B8B0014A78D /* accelerate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = accelerate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 		3E61A6791B09BC7D00D2474E /* ConvolutionExplorer */ = {
 			isa = PBXGroup;
 			children = (
+				3EB16CFD1B0C4B560014A78D /* accelerate */,
 				3E61A6A41B09BDF200D2474E /* kernelEditor */,
 				3E61A6A11B09BD2A00D2474E /* assets */,
 				3E61A69C1B09BCEE00D2474E /* shinpuru */,
@@ -146,6 +149,14 @@
 				3E61A6A51B09BE1A00D2474E /* KernelEditor.swift */,
 			);
 			name = kernelEditor;
+			sourceTree = "<group>";
+		};
+		3EB16CFD1B0C4B560014A78D /* accelerate */ = {
+			isa = PBXGroup;
+			children = (
+				3EB16CFE1B0C4B8B0014A78D /* accelerate.swift */,
+			);
+			name = accelerate;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +264,7 @@
 				3E61A67F1B09BC7D00D2474E /* ViewController.swift in Sources */,
 				3E61A67D1B09BC7D00D2474E /* AppDelegate.swift in Sources */,
 				3E61A69F1B09BD1100D2474E /* SLControls.swift in Sources */,
+				3EB16CFF1B0C4B8B0014A78D /* accelerate.swift in Sources */,
 				3E61A6A61B09BE1A00D2474E /* KernelEditor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

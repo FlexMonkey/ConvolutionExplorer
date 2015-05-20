@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Accelerate
 
 class ViewController: UIViewController {
 
@@ -57,29 +56,7 @@ class ViewController: UIViewController {
         applyKernel()
     }
     
-    func applyConvolutionFilterToImage(image: UIImage, kernel: [Int16], width: Int, height: Int, divisor: Int) -> UIImage
-    {
-        let imageRef = image.CGImage
-        
-        let inProvider = CGImageGetDataProvider(imageRef)
-        let inBitMapData = CGDataProviderCopyData(inProvider)
-        
-        var inBuffer: vImage_Buffer = vImage_Buffer(data: UnsafeMutablePointer(CFDataGetBytePtr(inBitMapData)), height: UInt(CGImageGetHeight(imageRef)), width: UInt(CGImageGetWidth(imageRef)), rowBytes: CGImageGetBytesPerRow(imageRef))
-        
-        var pixelBuffer = malloc(CGImageGetBytesPerRow(imageRef) * CGImageGetHeight(imageRef))
-        
-        var outBuffer = vImage_Buffer(data: pixelBuffer, height: UInt(CGImageGetHeight(imageRef)), width: UInt(CGImageGetWidth(imageRef)), rowBytes: CGImageGetBytesPerRow(imageRef))
-        
-        var bColor : Array<UInt8> = [0,0,0,0]
-        
-        var error = vImageConvolve_ARGB8888(&inBuffer, &outBuffer, nil, 0, 0, kernel, UInt32(height), UInt32(width), Int32(divisor), &bColor, UInt32(kvImageBackgroundColorFill))
-        
-        let out = UIImage(fromvImageOutBuffer: outBuffer, scale: image.scale, orientation: .Up)
-        
-        free(pixelBuffer)
-        
-        return out!
-    }
+ 
 
     func applyKernel()
     {
@@ -108,9 +85,7 @@ class ViewController: UIViewController {
             }
         }
         
-        println(kernel.debugDescription)
-        
-        imageView.image = applyConvolutionFilterToImage(image!, kernel: kernel, width: size, height: size, divisor: 4)
+        imageView.image = applyConvolutionFilterToImage(image!, kernel: kernel, divisor: 4)
     }
     
     func sliderChange()
@@ -159,18 +134,4 @@ class ViewController: UIViewController {
 
 }
 
-
-private extension UIImage
-{
-    convenience init?(fromvImageOutBuffer outBuffer:vImage_Buffer, scale:CGFloat, orientation: UIImageOrientation)
-    {
-        var colorSpace = CGColorSpaceCreateDeviceRGB()
-        
-        var context = CGBitmapContextCreate(outBuffer.data, Int(outBuffer.width), Int(outBuffer.height), 8, outBuffer.rowBytes, colorSpace, CGBitmapInfo(CGImageAlphaInfo.NoneSkipLast.rawValue))
-        
-        var outCGimage = CGBitmapContextCreateImage(context)
-        
-        self.init(CGImage: outCGimage, scale:scale, orientation:orientation)
-    }
-}
 
