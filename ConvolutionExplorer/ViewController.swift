@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     
     let toolbar = SLHGroup()
     let leftToolbar = SLVGroup()
+    let rightToolbar = SLVGroup()
     let leftToolbarButtonGroup = SLHGroup()
     
     let clearSelectionButton = ViewController.borderedButton("Clear Selection")
@@ -25,6 +26,7 @@ class ViewController: UIViewController {
     let invertSelectionButton = ViewController.borderedButton("Invert Selection")
     let zeroSelectionButton = ViewController.borderedButton("Zero Selection")
     
+    let divisorSegmentedControl = UISegmentedControl(items: ["1", "2", "4", "8", "16", "32"])
     let kernelSizeSegmentedControl = UISegmentedControl(items: [KernelSize.ThreeByThree.rawValue, KernelSize.FiveByFive.rawValue, KernelSize.SevenBySeven.rawValue])
     
     let image = UIImage(named: "image.jpg")
@@ -41,14 +43,16 @@ class ViewController: UIViewController {
         
         kernelEditor.kernel[17] = -1
         kernelEditor.kernel[23] = -1
-        kernelEditor.kernel[24] = 6
+        kernelEditor.kernel[24] = 7
         kernelEditor.kernel[25] = -1
         kernelEditor.kernel[31] = -1
         
         kernelSizeSegmentedControl.selectedSegmentIndex = 0
+        divisorSegmentedControl.selectedSegmentIndex = 2
 
         createLayout()
         createControlEvenHandlers()
+        selectionChanged()
         kernelSizeChange()
     }
     
@@ -60,8 +64,13 @@ class ViewController: UIViewController {
         leftToolbarButtonGroup.children = [clearSelectionButton, selectAllButton, invertSelectionButton, zeroSelectionButton]
         
         leftToolbar.children = [leftToolbarButtonGroup, valueSlider]
-        toolbar.children = [leftToolbar, kernelSizeSegmentedControl]
-        toolbar.explicitSize = 80
+        leftToolbar.margin = 2
+        
+        rightToolbar.children = [kernelSizeSegmentedControl, divisorSegmentedControl]
+        rightToolbar.margin = 2
+        
+        toolbar.children = [leftToolbar, rightToolbar]
+        toolbar.explicitSize = 84
         
         mainGroup.children = [workspace, toolbar]
         
@@ -72,6 +81,7 @@ class ViewController: UIViewController {
     {
         valueSlider.addTarget(self, action: "sliderChange", forControlEvents: UIControlEvents.ValueChanged)
         
+        divisorSegmentedControl.addTarget(self, action: "divisorChanged", forControlEvents: UIControlEvents.ValueChanged)
         kernelSizeSegmentedControl.addTarget(self, action: "kernelSizeChange", forControlEvents: UIControlEvents.ValueChanged)
         kernelEditor.addTarget(self, action: "selectionChanged", forControlEvents: UIControlEvents.ValueChanged)
         
@@ -109,7 +119,9 @@ class ViewController: UIViewController {
             }
         }
         
-        imageView.image = applyConvolutionFilterToImage(image!, kernel: kernel, divisor: 4)
+        let divisor = Int(pow(2, Float(divisorSegmentedControl.selectedSegmentIndex)))
+        
+        imageView.image = applyConvolutionFilterToImage(image!, kernel: kernel, divisor: divisor)
     }
     
     func sliderChange()
@@ -149,14 +161,24 @@ class ViewController: UIViewController {
     
     func selectionChanged()
     {
-        valueSlider.enabled = kernelEditor.selectedCellIndexes.count != 0
+        let cellsSelected = kernelEditor.selectedCellIndexes.count != 0
         
-        if valueSlider.enabled
+        valueSlider.enabled = cellsSelected
+        clearSelectionButton.enabled = cellsSelected
+        invertSelectionButton.enabled = cellsSelected
+        zeroSelectionButton.enabled = cellsSelected
+        
+        if cellsSelected
         {
             let selectionAverage = kernelEditor.selectedCellIndexes.reduce(0, combine: { $0 + kernelEditor.kernel[$1] }) / kernelEditor.selectedCellIndexes.count
             
             valueSlider.value = Float(selectionAverage);
         }
+    }
+    
+    func divisorChanged()
+    {
+        applyKernel()
     }
     
     func kernelSizeChange()
@@ -187,9 +209,10 @@ class ViewController: UIViewController {
         button.setTitle(text, forState: UIControlState.Normal)
         
         button.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
-        button.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Highlighted)
+        button.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
         
-        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.numberOfLines = 2
+        button.titleLabel?.textAlignment = NSTextAlignment.Center
         
         button.layer.cornerRadius = 3
         button.layer.borderColor = UIColor.blueColor().CGColor

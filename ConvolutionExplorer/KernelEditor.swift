@@ -56,12 +56,11 @@ class KernelEditor: UIControl
     {
         for (index: Int, value: (Int, KernelEditorCell)) in enumerate(zip(kernel, cells))
         {
-            // println("row = \(Int(index / 7)) | column = \(index % 7)")
             value.1.text = "\(value.0)"
         }
     }
     
-    var kernelSize: KernelSize = KernelSize.ThreeByThree
+    var kernelSize: KernelSize = .ThreeByThree
     {
         didSet
         {
