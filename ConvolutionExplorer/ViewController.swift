@@ -12,10 +12,18 @@ class ViewController: UIViewController {
 
     let mainGroup = SLVGroup()
     let workspace = SLHGroup()
-    let toolbar = SLHGroup()
     let imageView = UIImageView()
     let kernelEditor = KernelEditor(kernel: [Int](count: 49, repeatedValue: 0))
     let valueSlider = UISlider()
+    
+    let toolbar = SLHGroup()
+    let leftToolbar = SLVGroup()
+    let leftToolbarButtonGroup = SLHGroup()
+    
+    let clearSelectionButton = ViewController.borderedButton("Clear Selection")
+    let selectAllButton = ViewController.borderedButton("Select All")
+    let invertSelectionButton = ViewController.borderedButton("Invert Selection")
+    let zeroSelectionButton = ViewController.borderedButton("Zero Selection")
     
     let kernelSizeSegmentedControl = UISegmentedControl(items: [KernelSize.ThreeByThree.rawValue, KernelSize.FiveByFive.rawValue, KernelSize.SevenBySeven.rawValue])
     
@@ -44,8 +52,14 @@ class ViewController: UIViewController {
         
         workspace.children = [kernelEditor, imageView]
         
-        toolbar.children = [valueSlider, kernelSizeSegmentedControl]
-        toolbar.explicitSize = 40
+        leftToolbarButtonGroup.margin = 5
+        leftToolbarButtonGroup.children = [clearSelectionButton, selectAllButton, invertSelectionButton, zeroSelectionButton]
+        
+        createButtonHandlers()
+        
+        leftToolbar.children = [leftToolbarButtonGroup, valueSlider]
+        toolbar.children = [leftToolbar, kernelSizeSegmentedControl]
+        toolbar.explicitSize = 80
         
         mainGroup.children = [workspace, toolbar]
         view.addSubview(mainGroup)
@@ -56,6 +70,13 @@ class ViewController: UIViewController {
         applyKernel()
     }
     
+    func createButtonHandlers()
+    {
+        clearSelectionButton.addTarget(self, action: "clearSelection", forControlEvents: UIControlEvents.TouchDown)
+        selectAllButton.addTarget(self, action: "selectAll", forControlEvents: UIControlEvents.TouchDown)
+        invertSelectionButton.addTarget(self, action: "invertSelection", forControlEvents: UIControlEvents.TouchDown)
+        zeroSelectionButton.addTarget(self, action: "setSelectedToZero", forControlEvents: UIControlEvents.TouchDown)
+    }
  
 
     func applyKernel()
@@ -98,6 +119,35 @@ class ViewController: UIViewController {
         applyKernel()
     }
     
+    func setSelectedToZero()
+    {
+        for index in kernelEditor.selectedCellIndexes
+        {
+            kernelEditor.kernel[index] = 0
+        }
+        
+        selectionChanged()
+        applyKernel()
+    }
+    
+    func clearSelection()
+    {
+        kernelEditor.cells.map({ $0.selected = false })
+        selectionChanged()
+    }
+    
+    func selectAll()
+    {
+        kernelEditor.cells.map({ $0.selected = true })
+        selectionChanged()
+    }
+    
+    func invertSelection()
+    {
+        kernelEditor.cells.map({ $0.selected = !$0.selected })
+        selectionChanged()
+    }
+    
     func selectionChanged()
     {
         valueSlider.enabled = kernelEditor.selectedCellIndexes.count != 0
@@ -132,6 +182,23 @@ class ViewController: UIViewController {
         return Int(UIInterfaceOrientationMask.Landscape.rawValue)
     }
 
+    class func borderedButton(text: String) -> SLButton
+    {
+        let button = SLButton()
+        button.setTitle(text, forState: UIControlState.Normal)
+        
+        button.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
+        button.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Highlighted)
+        
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        
+        button.layer.cornerRadius = 3
+        button.layer.borderColor = UIColor.blueColor().CGColor
+        button.layer.borderWidth = 1
+        
+        return button
+    }
+    
 }
 
 
