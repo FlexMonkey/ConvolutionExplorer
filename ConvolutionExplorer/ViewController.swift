@@ -38,9 +38,6 @@ class ViewController: UIViewController {
         valueSlider.minimumValue = -20
         valueSlider.maximumValue = 20
         valueSlider.enabled = false
-        valueSlider.addTarget(self, action: "sliderChange", forControlEvents: UIControlEvents.ValueChanged)
-        
-        kernelSizeSegmentedControl.addTarget(self, action: "kernelSizeChange", forControlEvents: UIControlEvents.ValueChanged)
         
         kernelEditor.kernel[17] = -1
         kernelEditor.kernel[23] = -1
@@ -48,30 +45,36 @@ class ViewController: UIViewController {
         kernelEditor.kernel[25] = -1
         kernelEditor.kernel[31] = -1
         
-        kernelEditor.addTarget(self, action: "selectionChanged", forControlEvents: UIControlEvents.ValueChanged)
-        
+        kernelSizeSegmentedControl.selectedSegmentIndex = 0
+
+        createLayout()
+        createControlEvenHandlers()
+        kernelSizeChange()
+    }
+    
+    func createLayout()
+    {
         workspace.children = [kernelEditor, imageView]
         
         leftToolbarButtonGroup.margin = 5
         leftToolbarButtonGroup.children = [clearSelectionButton, selectAllButton, invertSelectionButton, zeroSelectionButton]
-        
-        createButtonHandlers()
         
         leftToolbar.children = [leftToolbarButtonGroup, valueSlider]
         toolbar.children = [leftToolbar, kernelSizeSegmentedControl]
         toolbar.explicitSize = 80
         
         mainGroup.children = [workspace, toolbar]
+        
         view.addSubview(mainGroup)
-        
-        kernelSizeSegmentedControl.selectedSegmentIndex = 0
-        kernelSizeChange()
-        
-        applyKernel()
     }
     
-    func createButtonHandlers()
+    func createControlEvenHandlers()
     {
+        valueSlider.addTarget(self, action: "sliderChange", forControlEvents: UIControlEvents.ValueChanged)
+        
+        kernelSizeSegmentedControl.addTarget(self, action: "kernelSizeChange", forControlEvents: UIControlEvents.ValueChanged)
+        kernelEditor.addTarget(self, action: "selectionChanged", forControlEvents: UIControlEvents.ValueChanged)
+        
         clearSelectionButton.addTarget(self, action: "clearSelection", forControlEvents: UIControlEvents.TouchDown)
         selectAllButton.addTarget(self, action: "selectAll", forControlEvents: UIControlEvents.TouchDown)
         invertSelectionButton.addTarget(self, action: "invertSelection", forControlEvents: UIControlEvents.TouchDown)
@@ -111,20 +114,16 @@ class ViewController: UIViewController {
     
     func sliderChange()
     {
-        for index in kernelEditor.selectedCellIndexes
-        {
-            kernelEditor.kernel[index] = Int(valueSlider.value)
-        }
+        let newValue = Int(valueSlider.value)
+        
+        kernelEditor.selectedCellIndexes.map({ self.kernelEditor.kernel[$0] = newValue })
         
         applyKernel()
     }
     
     func setSelectedToZero()
     {
-        for index in kernelEditor.selectedCellIndexes
-        {
-            kernelEditor.kernel[index] = 0
-        }
+        kernelEditor.selectedCellIndexes.map({ self.kernelEditor.kernel[$0] = 0 })
         
         selectionChanged()
         applyKernel()
@@ -174,7 +173,7 @@ class ViewController: UIViewController {
         let top = topLayoutGuide.length
         let bottom = bottomLayoutGuide.length
         
-        mainGroup.frame = CGRect(x: 0, y: top, width: view.frame.width, height: view.frame.height - top - bottom).rectByInsetting(dx: 5, dy: 0)
+        mainGroup.frame = CGRect(x: 0, y: top, width: view.frame.width, height: view.frame.height - top - bottom).rectByInsetting(dx: 5, dy: 5)
     }
     
     override func supportedInterfaceOrientations() -> Int
